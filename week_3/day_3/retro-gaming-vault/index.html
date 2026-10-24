@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#10131f">
+  <meta name="description" content="Explore a curated collection of legendary gaming consoles in the Retro Gaming Vault.">
+  <title>Retro Gaming Vault — Interactive Catalog</title>
+  <link rel="preconnect" href="https://images.unsplash.com">
+  <link rel="stylesheet" href="style.css">
+  <script src="data.js" defer></script>
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main-content">Skip to catalog</a>
+  <header class="site-header">
+    <a class="brand" href="#" aria-label="Retro Gaming Vault home">
+      <span class="brand-mark" aria-hidden="true">▣</span>
+      <span><strong>RETRO<span class="accent">VAULT</span></strong><small>THE CLASSICS NEVER DIE</small></span>
+    </a>
+    <div class="header-actions">
+      <label class="search-wrap">
+        <span class="visually-hidden">Search consoles</span>
+        <span aria-hidden="true">⌕</span>
+        <input id="search-input" type="search" placeholder="Search the vault..." autocomplete="off">
+        <kbd>/</kbd>
+      </label>
+      <button id="theme-toggle" class="icon-button" type="button" aria-label="Switch to light theme" title="Toggle theme">☼</button>
+    </div>
+  </header>
+
+  <main id="main-content">
+    <section class="hero" aria-labelledby="hero-title">
+      <div class="hero-copy">
+        <p class="eyebrow"><span class="live-dot"></span> A DIGITAL MUSEUM OF PLAY</p>
+        <h1 id="hero-title">Press start on<br><span class="gradient-text">gaming history.</span></h1>
+        <p class="hero-description">A curated collection of legendary machines that changed the way we play, one generation at a time.</p>
+        <a class="hero-link" href="#catalog">Explore the collection <span aria-hidden="true">↓</span></a>
+      </div>
+      <div class="hero-art" aria-hidden="true">
+        <div class="orbit orbit-one"></div><div class="orbit orbit-two"></div>
+        <div class="pixel pixel-one"></div><div class="pixel pixel-two"></div>
+        <div class="hero-console"><div class="console-top"><span></span><span></span><span></span></div><div class="console-front"><div class="console-slot"></div><div class="console-light"></div></div></div>
+        <div class="hero-sticker">EST.<br><strong>1972</strong></div>
+      </div>
+      <div class="hero-bottom"><span>10 ICONIC MACHINES</span><span>1972 — 2006</span><span>BUILT FOR NOSTALGIA <span class="accent">✳</span></span></div>
+    </section>
+
+    <section class="stats-strip" aria-label="Collection statistics">
+      <div><strong id="total-count">10</strong><span>COLLECTIBLES</span></div>
+      <div><strong>4</strong><span>GENERATIONS</span></div>
+      <div><strong>∞</strong><span>GOOD MEMORIES</span></div>
+    </section>
+
+    <section class="catalog-section" id="catalog" aria-labelledby="catalog-title">
+      <div class="section-heading">
+        <div><p class="eyebrow">THE COLLECTION</p><h2 id="catalog-title">Browse the vault<span class="accent">.</span></h2></div>
+        <p class="result-count" id="result-count" aria-live="polite">Showing 10 items</p>
+      </div>
+      <div class="controls">
+        <div class="filter-group" role="group" aria-label="Filter by console category" id="category-filters">
+          <button class="filter-button active" data-category="All" aria-pressed="true">All items</button>
+          <button class="filter-button" data-category="Home Console" aria-pressed="false">Home consoles</button>
+          <button class="filter-button" data-category="Handheld" aria-pressed="false">Handhelds</button>
+          <button class="filter-button" data-category="Hybrid" aria-pressed="false">Hybrid</button>
+        </div>
+        <div class="sort-wrap"><label for="sort-select">SORT BY</label><select id="sort-select">
+          <option value="featured">Featured</option><option value="az">Name: A–Z</option><option value="za">Name: Z–A</option><option value="year-desc">Newest release</option><option value="year-asc">Oldest release</option>
+        </select></div>
+        <button id="favorites-filter" class="filter-button favorite-filter" aria-pressed="false">♡ Favorites <span id="favorite-count">0</span></button>
+      </div>
+
+      <div id="cards-grid" class="cards-grid" aria-live="polite"></div>
+      <div id="empty-state" class="empty-state" hidden>
+        <span class="empty-icon" aria-hidden="true">⌕</span><h3>No items found</h3>
+        <p>Nothing in the vault matches those filters. Try a different search.</p>
+        <button id="reset-filters" class="primary-button" type="button">Reset filters</button>
+      </div>
+    </section>
+
+    <section class="add-section" aria-labelledby="add-title">
+      <div class="add-intro"><p class="eyebrow">YOUR COLLECTION, YOUR RULES</p><h2 id="add-title">Got a favorite<br>we missed?</h2><p>Add a console to your personal vault. Your custom items stay in this browser session.</p></div>
+      <form id="add-item-form" class="add-form">
+        <div class="form-row"><label for="item-title">Console name</label><input id="item-title" name="title" required maxlength="70" placeholder="e.g. Sega Dreamcast"></div>
+        <div class="form-row"><label for="item-category">Category</label><select id="item-category" name="category" required><option value="Home Console">Home Console</option><option value="Handheld">Handheld</option><option value="Hybrid">Hybrid</option></select></div>
+        <div class="form-row"><label for="item-year">Release year</label><input id="item-year" name="year" type="number" min="1970" max="2026" required placeholder="2001"></div>
+        <div class="form-row"><label for="item-image">Image URL (optional)</label><input id="item-image" name="image" type="url" placeholder="https://..."></div>
+        <div class="form-row full-width"><label for="item-description">Why it belongs in the vault</label><textarea id="item-description" name="description" rows="3" required maxlength="280" placeholder="A short description of this legendary machine..."></textarea></div>
+        <button class="primary-button full-width" type="submit">＋ Add to the vault</button>
+        <p class="form-message full-width" id="form-message" role="status"></p>
+      </form>
+    </section>
+  </main>
+
+  <footer class="site-footer"><a class="brand footer-brand" href="#"><span class="brand-mark" aria-hidden="true">▣</span><span><strong>RETRO<span class="accent">VAULT</span></strong><small>THE CLASSICS NEVER DIE</small></span></a><p>Made for the love of play. <span class="accent">♥</span></p><a href="#main-content" class="back-top">BACK TO TOP ↑</a></footer>
+
+  <dialog id="detail-dialog" class="detail-dialog" aria-labelledby="dialog-title">
+    <div class="dialog-shell">
+      <button class="dialog-close" id="dialog-close" type="button" aria-label="Close details">✕</button>
+      <div class="dialog-image-wrap"><img id="dialog-image" src="" alt=""><span id="dialog-category" class="category-badge"></span></div>
+      <div class="dialog-content"><p class="eyebrow">VAULT ARCHIVE <span id="dialog-id"></span></p><h2 id="dialog-title"></h2><div class="dialog-metric" id="dialog-metric"></div><p id="dialog-description"></p><div class="detail-facts" id="dialog-facts"></div><button id="dialog-favorite" class="primary-button" type="button">♡ Add to favorites</button></div>
+    </div>
+  </dialog>
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+</body>
+</html>
