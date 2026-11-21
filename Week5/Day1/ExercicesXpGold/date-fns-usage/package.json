@@ -1,0 +1,15 @@
+{
+  "name": "date-fns-usage",
+  "version": "1.0.0",
+  "description": "Date operations using date-fns",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "date-fns": "^4.4.0"
+  }
+}

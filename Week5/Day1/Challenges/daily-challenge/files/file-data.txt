@@ -1,0 +1,2 @@
+Node.js is an open-source, cross-platform JavaScript runtime environment.
+This text is read dynamically using the fs module!

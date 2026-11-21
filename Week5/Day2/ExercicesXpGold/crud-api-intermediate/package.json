@@ -1,0 +1,12 @@
+{
+  "name": "crud-api-intermediate",
+  "version": "1.0.0",
+  "description": "Intermediate CRUD API with Express and Axios",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}

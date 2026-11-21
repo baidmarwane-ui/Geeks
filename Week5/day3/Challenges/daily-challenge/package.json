@@ -1,0 +1,10 @@
+{
+  "name": "trivia-quiz-game",
+  "version": "1.0.0",
+  "description": "Trivia Quiz Game with express.Router",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js"
+  },
+  "license": "ISC"
+}

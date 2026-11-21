@@ -1,0 +1,15 @@
+{
+  "name": "daily-challenge",
+  "version": "1.0.0",
+  "description": "Daily Challenge: Node.js App & NPM",
+  "main": "challenge.js",
+  "scripts": {
+    "start": "node challenge.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "chalk": "^4.1.2"
+  }
+}

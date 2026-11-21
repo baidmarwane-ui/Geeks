@@ -1,0 +1,10 @@
+{
+  "name": "day3-exercice-3",
+  "version": "1.0.0",
+  "description": "Book Management API with express.Router",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js"
+  },
+  "license": "ISC"
+}

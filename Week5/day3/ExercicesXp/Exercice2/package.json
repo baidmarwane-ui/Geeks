@@ -1,0 +1,10 @@
+{
+  "name": "day3-exercice-2",
+  "version": "1.0.0",
+  "description": "To-do List API using express.Router",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js"
+  },
+  "license": "ISC"
+}

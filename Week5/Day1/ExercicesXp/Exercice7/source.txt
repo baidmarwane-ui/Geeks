@@ -1,0 +1,2 @@
+Hello from source.txt!
+This content was successfully read and copied to destination.txt using the Node.js fs module.

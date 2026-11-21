@@ -1,0 +1,12 @@
+{
+  "name": "crud-api",
+  "version": "1.0.0",
+  "description": "Express CRUD API with Axios data module",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}

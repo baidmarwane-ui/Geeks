@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Express Node.js Quiz Game</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #1e1e2f;
+      color: #ffffff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+      padding: 20px;
+    }
+    .quiz-card {
+      background: #27293d;
+      border-radius: 12px;
+      max-width: 540px;
+      width: 100%;
+      padding: 30px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    }
+    h2 { margin-top: 0; color: #00d2d3; text-align: center; }
+    .progress {
+      color: #a4b0be;
+      font-size: 14px;
+      margin-bottom: 15px;
+      text-align: right;
+    }
+    .question-title {
+      font-size: 18px;
+      line-height: 1.4;
+      margin-bottom: 20px;
+    }
+    .option-btn {
+      width: 100%;
+      padding: 14px 18px;
+      margin-bottom: 10px;
+      text-align: left;
+      font-size: 15px;
+      background: #1f2029;
+      color: #ffffff;
+      border: 1px solid #3d3e51;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .option-btn:hover:not(:disabled) {
+      background: #37384e;
+      border-color: #00d2d3;
+    }
+    .option-btn.correct {
+      background: #10b981;
+      border-color: #059669;
+    }
+    .option-btn.wrong {
+      background: #ef4444;
+      border-color: #dc2626;
+    }
+    .feedback {
+      min-height: 24px;
+      font-weight: bold;
+      margin: 15px 0;
+      font-size: 15px;
+      text-align: center;
+    }
+    .next-btn {
+      width: 100%;
+      padding: 12px;
+      font-size: 16px;
+      font-weight: bold;
+      background: #00d2d3;
+      color: #1e1e2f;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      display: none;
+    }
+    .next-btn:hover { background: #00b4b5; }
+    .result-box {
+      text-align: center;
+      display: none;
+    }
+    .result-score {
+      font-size: 36px;
+      font-weight: bold;
+      color: #00d2d3;
+      margin: 20px 0;
+    }
+  </style>
+</head>
+<body>
+  <div class="quiz-card">
+    <h2>Express Quiz Game</h2>
+
+    <div id="quizContainer">
+      <div class="progress" id="progress">Question 1 / 5</div>
+      <div class="question-title" id="questionText">Loading question...</div>
+      <div id="optionsContainer"></div>
+      <div class="feedback" id="feedback"></div>
+      <button class="next-btn" id="nextBtn" onclick="nextQuestion()">Next Question</button>
+    </div>
+
+    <div class="result-box" id="resultContainer">
+      <h3>Quiz Completed!</h3>
+      <p>Here is your final score:</p>
+      <div class="result-score" id="finalScore">0 / 5</div>
+      <button class="next-btn" style="display:inline-block;" onclick="restartQuiz()">Restart Quiz</button>
+    </div>
+  </div>
+
+  <script>
+    let questions = [];
+    let currentIndex = 0;
+    let score = 0;
+
+    async function loadQuestions() {
+      const res = await fetch('/api/questions');
+      questions = await res.json();
+      currentIndex = 0;
+      score = 0;
+      document.getElementById('quizContainer').style.display = 'block';
+      document.getElementById('resultContainer').style.display = 'none';
+      showCurrentQuestion();
+    }
+
+    function showCurrentQuestion() {
+      const q = questions[currentIndex];
+      document.getElementById('progress').textContent = `Question ${currentIndex + 1} / ${questions.length}`;
+      document.getElementById('questionText').textContent = q.question;
+      document.getElementById('feedback').textContent = '';
+      document.getElementById('nextBtn').style.display = 'none';
+
+      const container = document.getElementById('optionsContainer');
+      container.innerHTML = '';
+
+      q.options.forEach((opt, index) => {
+        const btn = document.createElement('button');
+        btn.className = 'option-btn';
+        btn.textContent = `${String.fromCharCode(65 + index)}. ${opt}`;
+        btn.onclick = () => selectOption(q.id, index, btn);
+        container.appendChild(btn);
+      });
+    }
+
+    async function selectOption(questionId, selectedOption, clickedBtn) {
+      const buttons = document.querySelectorAll('.option-btn');
+      buttons.forEach(b => b.disabled = true);
+
+      const res = await fetch('/api/answer', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ questionId, selectedOption })
+      });
+
+      const result = await res.json();
+      const feedback = document.getElementById('feedback');
+
+      if (result.correct) {
+        score++;
+        clickedBtn.classList.add('correct');
+        feedback.style.color = '#10b981';
+        feedback.textContent = 'Correct answer!';
+      } else {
+        clickedBtn.classList.add('wrong');
+        buttons[result.correctAnswerIndex].classList.add('correct');
+        feedback.style.color = '#ef4444';
+        feedback.textContent = `Wrong! The correct answer was "${result.correctAnswerText}".`;
+      }
+
+      document.getElementById('nextBtn').style.display = 'block';
+    }
+
+    function nextQuestion() {
+      currentIndex++;
+      if (currentIndex < questions.length) {
+        showCurrentQuestion();
+      } else {
+        document.getElementById('quizContainer').style.display = 'none';
+        document.getElementById('resultContainer').style.display = 'block';
+        document.getElementById('finalScore').textContent = `${score} / ${questions.length}`;
+      }
+    }
+
+    function restartQuiz() {
+      loadQuestions();
+    }
+
+    loadQuestions();
+  </script>
+</body>
+</html>

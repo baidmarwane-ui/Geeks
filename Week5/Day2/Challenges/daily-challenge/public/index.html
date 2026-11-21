@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Emoji Guessing Game</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #f0f4f8;
+      display: flex;
+      justify-content: center;
+      padding: 30px 15px;
+      margin: 0;
+    }
+    .card {
+      background: #ffffff;
+      border-radius: 12px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+      max-width: 480px;
+      width: 100%;
+      padding: 24px;
+      text-align: center;
+    }
+    .emoji-box {
+      font-size: 80px;
+      margin: 20px 0;
+    }
+    .options {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+    button.opt-btn {
+      padding: 12px;
+      font-size: 16px;
+      font-weight: 600;
+      border: 2px solid #3b82f6;
+      background: #eff6ff;
+      color: #1d4ed8;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    button.opt-btn:hover {
+      background: #3b82f6;
+      color: white;
+    }
+    .score-board {
+      font-size: 18px;
+      font-weight: bold;
+      color: #374151;
+      margin-bottom: 12px;
+    }
+    .feedback {
+      min-height: 28px;
+      font-size: 16px;
+      font-weight: bold;
+      margin-bottom: 16px;
+    }
+    .feedback.success { color: #16a34a; }
+    .feedback.error { color: #dc2626; }
+    .leaderboard {
+      margin-top: 24px;
+      text-align: left;
+      border-top: 1px solid #e5e7eb;
+      padding-top: 16px;
+    }
+    .leaderboard h3 { margin: 0 0 10px 0; font-size: 16px; color: #4b5563; }
+    .leaderboard ol { padding-left: 20px; margin: 0; }
+    .leaderboard li { margin-bottom: 4px; color: #6b7280; font-size: 14px; }
+    input[type="text"] {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 14px;
+      border: 1px solid #d1d5db;
+      border-radius: 6px;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h2>Emoji Guessing Game</h2>
+    <input type="text" id="playerName" placeholder="Enter your player name..." value="Player 1" />
+    <div class="score-board">Score: <span id="score">0</span></div>
+    <div class="emoji-box" id="emoji">❓</div>
+    <div class="feedback" id="feedback"></div>
+    <div class="options" id="options"></div>
+
+    <div class="leaderboard">
+      <h3>🏆 Leaderboard</h3>
+      <ol id="leaderboardList"></ol>
+    </div>
+  </div>
+
+  <script>
+    let currentEmoji = '';
+    let score = 0;
+
+    async function loadQuestion() {
+      const res = await fetch('/api/question');
+      const data = await res.json();
+      currentEmoji = data.emoji;
+      document.getElementById('emoji').textContent = currentEmoji;
+
+      const optionsContainer = document.getElementById('options');
+      optionsContainer.innerHTML = '';
+      data.options.forEach(opt => {
+        const btn = document.createElement('button');
+        btn.className = 'opt-btn';
+        btn.textContent = opt;
+        btn.onclick = () => submitGuess(opt);
+        optionsContainer.appendChild(btn);
+      });
+    }
+
+    async function submitGuess(guess) {
+      const playerName = document.getElementById('playerName').value || 'Anonymous';
+      const feedback = document.getElementById('feedback');
+
+      const res = await fetch('/api/guess', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          emoji: currentEmoji,
+          guess,
+          playerName,
+          currentScore: score
+        })
+      });
+
+      const result = await res.json();
+      score = result.score;
+      document.getElementById('score').textContent = score;
+
+      if (result.correct) {
+        feedback.className = 'feedback success';
+        feedback.textContent = `Correct! It's "${result.correctName}". +1 point!`;
+      } else {
+        feedback.className = 'feedback error';
+        feedback.textContent = `Wrong! The correct answer was "${result.correctName}".`;
+      }
+
+      loadLeaderboard();
+      setTimeout(loadQuestion, 1200);
+    }
+
+    async function loadLeaderboard() {
+      const res = await fetch('/api/leaderboard');
+      const list = await res.json();
+      const ol = document.getElementById('leaderboardList');
+      ol.innerHTML = '';
+      list.forEach(entry => {
+        const li = document.createElement('li');
+        li.textContent = `${entry.player}: ${entry.score} pts`;
+        ol.appendChild(li);
+      });
+    }
+
+    loadQuestion();
+    loadLeaderboard();
+  </script>
+</body>
+</html>
